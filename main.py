@@ -1,34 +1,47 @@
 from tabulate import tabulate
 from random import shuffle
 
-reviewers = ["Luca", "Dyllan", "Max", "Milan", "Jordy"]
 
-
-def checkResults(_round1, _round2):
+def checkResults():
     for i in range(len(reviewers)):
-        rv = reviewers[i]
-        r1 = _round1[i]
-        r2 = _round2[i]
+        line = [reviewers[i]]
 
-        if rv is r1 or r1 is r2 or rv is r2:
+        # Add the relevant reviewers for each person
+        for j in range(amountOfReviews):
+            line.append(rounds[j][i])
+
+        # Return false if all the items in the list are not unique
+        if len(set(line)) != len(line):
             return False
-
     return True
 
 
 if __name__ == '__main__':
-    data = []
-    round1 = reviewers.copy()
-    round2 = reviewers.copy()
+    reviewers = input("Name all of the reviewers separated by a ',': ").split(",")
+    amountOfReviews = int(input("How many reviews does everyone get? "))
 
-    while not checkResults(round1, round2):
-        shuffle(round1)
-        shuffle(round2)
+    if len(reviewers) < 2:
+        raise Exception("Not enough reviewers were given! The minimum is 2.")
+    if amountOfReviews <= 0:
+        raise Exception("The amount of reviews must me higher than 0!")
+    if len(reviewers) <= amountOfReviews:
+        raise Exception("It's not possible to give this many reviews given the amount of reviewers!")
 
+    rounds = [reviewers.copy() for i in range(amountOfReviews)]
+
+    # Keep shuffling until a solution is found
+    while not checkResults():
+        for r in rounds:
+            shuffle(r)
+
+    # Generate table data
+    tableData = []
     for i in range(len(reviewers)):
-        rv = reviewers[i]
-        r1 = round1[i]
-        r2 = round2[i]
-        data.append([rv, r1, r2])
+        tableLine = [reviewers[i]]
+        for j in range(amountOfReviews):
+            tableLine.append(rounds[j][i])
+        tableData.append(tableLine)
 
-    print(tabulate(data, headers=["Naam", "Reviewer 1", "Reviewer 2"]))
+    headers = [f"Reviewer #{r+1}" for r in range(amountOfReviews)]
+    headers.insert(0, "Name")
+    print(tabulate(tableData, headers=headers))
