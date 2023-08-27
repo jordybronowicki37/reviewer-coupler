@@ -1,5 +1,5 @@
 # Reviewer coupler
-Use this script to randomly assign a group of reviewers to each other.
+Use this script to randomly assign a group of reviewers to each other so that everyone gets a review from a different set of people.
 
 ## How to run the project?
 1. Install requirements:
